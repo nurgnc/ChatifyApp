@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Form, Segment, Button, Grid, Message } from 'semantic-ui-react';
 import styles from "./login.module.css";
 
@@ -22,6 +23,10 @@ const Login = () => {
                         <Button color="purple" fluid size="large"> Giriş Yap </Button>
                     </Segment>
                 </Form>
+
+                <Message>
+                    Yeni misin? <Link to="/signup">Hesap Oluştur</Link>
+                </Message>
             </Grid.Column>
         </Grid>
     )
