@@ -1,11 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useFirebase } from "react-redux-firebase";
 import { Link } from 'react-router-dom';
 import { Form, Segment, Button, Grid, Message } from 'semantic-ui-react';
 import { useForm } from "react-hook-form";
 import styles from "./signup.module.css";
 
 const SignUp = () => {
+    const firebase = useFirebase();
     const { register, errors, handleSubmit, setValue } = useForm();
+
+    const [fbErrors, setFbErrors] = useState([]);
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         register({ name: "username"}, { required: true });
@@ -13,8 +18,19 @@ const SignUp = () => {
         register({ name: "password"}, { required: true, minLength: 6 });
     }, []);
 
-    const onSubmit = (data, e) => {
-        console.log(data);
+    const onSubmit = ({ username, email, password }, e) => {
+        setSubmitting(true);
+        setFbErrors([]);
+
+        const [first, last] = username.split(' ');
+
+        firebase.createUser(
+            { email, password },
+            {
+                name: username,
+                avatar: `https://ui-avatars.com/api/?name=${first}+${last}&background=random&color=fff`,
+            }
+        )
     }
 
     return (
@@ -42,7 +58,7 @@ const SignUp = () => {
                         error={errors.password ? true : false}
                         />
 
-                        <Button color="purple" fluid size="large"> Kaydol </Button>
+                        <Button color="purple" fluid size="large" disabled = {submitting} > Kaydol </Button>
                     </Segment>
                 </Form>
 

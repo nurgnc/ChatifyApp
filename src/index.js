@@ -44,7 +44,7 @@ ReactDOM.render(
     <ReactReduxFirebaseProvider {...rrfProps}>
       <Router>
         <Root /> 
-        {/* Root'un içinde history elemanının kullanılabilmesi için Router ile sarmalanmış olması gerekir. */}
+        {/* Root'un içinde history elemanının kullanılabilmesi için Router ile sarmalanmış olması gerekir.*/}
       </Router>
     </ReactReduxFirebaseProvider>
   </ Provider >,
