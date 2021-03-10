@@ -31,7 +31,17 @@ const SignUp = () => {
                 avatar: `https://ui-avatars.com/api/?name=${first}+${last}&background=random&color=fff`,
             }
         )
-    }
+        .then((user) =>{
+            console.log(user);
+            setSubmitting(false);
+        })
+        .catch((error) => {
+            setFbErrors([{message: error.message }])
+            setSubmitting(false);
+        });
+    };
+
+    const displayErrors = () => fbErrors.map((error, index) => <p key={index}>{error.message}</p>);
 
     return (
         <Grid textAlign="center" verticalAlign="middle" className={styles.container}>
@@ -61,6 +71,11 @@ const SignUp = () => {
                         <Button color="purple" fluid size="large" disabled = {submitting} > Kaydol </Button>
                     </Segment>
                 </Form>
+                {
+                    fbErrors.length > 0 && (
+                        <Message error>{displayErrors()}</Message>
+                    )
+                }
 
                 <Message>
                     Zaten bir hesabın var mı? <Link to="/login">Giriş Yap</Link>
