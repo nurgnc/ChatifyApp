@@ -1,20 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useFirebase } from "react-redux-firebase";
 import { Link } from 'react-router-dom';
 import { Form, Segment, Button, Grid, Message } from 'semantic-ui-react';
 import { useForm } from "react-hook-form";
 import styles from "./login.module.css";
 
 const Login = () => {
+    const firebase = useFirebase();
     const { register, errors, handleSubmit, setValue } = useForm();
+
+    const [fbErrors, setFbErrors] = useState([]);
+    const [submitting, setSubmitting] = useState(false);
+
 
     useEffect(() => {
         register({ name: "email"}, { required: true });
         register({ name: "password"}, { required: true, minLength: 6 });
     }, []);
 
-    const onSubmit = (data, e) => {
-        console.log(data);
+    const onSubmit = ({email, password}, e) => {
+        setSubmitting(true);
+        setFbErrors([]);
+
+        firebase.login({
+            email, password
+        })
+        .then((data) => {
+            console.log(data);
+            setSubmitting(false)
+        })
+        .catch(error) => {
+            setSubmitting(false);
+            setFbErrors([{message: }])
+        }
     }
+
+    const displayErrors = () => fbErrors.map((error, index) => <p key={index}>{error.message}</p>);
 
     return (
         <Grid textAlign="center" verticalAlign="middle" className={styles.container}>
@@ -35,9 +56,14 @@ const Login = () => {
                         error={errors.password ? true : false}
                         />
 
-                        <Button color="purple" fluid size="large"> Giriş Yap </Button>
+                        <Button color="purple" fluid size="large" disabled = {submitting}> Giriş Yap </Button>
                     </Segment>
                 </Form>
+                {
+                    fbErrors.length > 0 && (
+                        <Message error>{displayErrors()}</Message>
+                    )
+                }
 
                 <Message>
                     Yeni misin? <Link to="/signup">Hesap Oluştur</Link>
